@@ -1,0 +1,2 @@
+72ba291f /whitelist.json
+36141e22 /perfect-whitelist-location/whitelist.json

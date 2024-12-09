@@ -1,0 +1,11 @@
+/config/config.json
+/data/
+/modules/__pycache__
+/whitelist/paths.txt
+/whitelist/pterodactyl.txt
+/whitelist/whitelist.json
+/pyvenv.cfg
+/Scripts/deactivate.bat
+/Scripts/Activate.ps1
+/Scripts/activate.bat
+/Scripts/activate
