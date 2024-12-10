@@ -81,7 +81,7 @@ async def cmdverify(ctx:slash.Context):
     #TODO verify somehow
 
 async def syncWhitelist():
-    results = cur.execute("SELECT mcname, uuid, iswhitelisted FROM user")
+    results = cur.execute("SELECT mcname, uuid, is_verified FROM user")
     results = cur.fetchall()
     whitelist = []
 

@@ -8,9 +8,10 @@ from discord.ext import slash
 
 #init.logger()
 
-token = init.config().get_token()
-domain = init.config().get_pterodactyl_domain()
-apikey = init.config().get_pterodactyl_apikey()
+conf = init.config('discord')
+token = conf.get_token()
+domain = conf.get_pterodactyl_domain()
+apikey = conf.get_pterodactyl_apikey()
 
 bot = slash.SlashBot(command_prefix='!', help_command=None)
 

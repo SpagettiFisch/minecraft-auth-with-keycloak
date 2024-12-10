@@ -4,15 +4,19 @@ import datetime
 import sqlite3
 
 class config():
-    def __init__(self):
+    def __init__(self, type):
         with open('config/config.json') as json_file:
             jsonstructure = json.load(json_file)
-            for p in jsonstructure['discord']:
-                self.token = p['token']
-                self.pterodactyl_domain = p['pterodactyl_domain']
-                self.pterodactyl_apikey = p['pterodactyl_apikey']
-                # self.mod_roles = p['mod_roles']
-                # self.admin_roles = p['admin_roles']
+            if type == "discord":
+                for p in jsonstructure['discord']:
+                    self.token = p['token']
+                    self.pterodactyl_domain = p['pterodactyl_domain']
+                    self.pterodactyl_apikey = p['pterodactyl_apikey']
+                    # self.mod_roles = p['mod_roles']
+                    # self.admin_roles = p['admin_roles']
+            elif type == "web":
+                for p in jsonstructure['web']:
+                    self.redirect_url = p['callback_url']
 
     def get_token(self):
         return self.token
@@ -24,11 +28,14 @@ class config():
     #     return self.mod_roles
     # def get_admin_roles(self):
     #     return self.admin_roles
+
+    def get_redirect_url(self):
+        return self.redirect_url
     
 
 con = sqlite3.connect('data/database.sqlite')
 cur = con.cursor()
-cur.execute("""CREATE TABLE IF NOT EXISTS user (id INT PRIMARY KEY, nickname TEXT, avatar_url TEXT, mcname TEXT, uuid TEXT, iswhitelisted BOOLEAN, )""") 
+cur.execute("""CREATE TABLE IF NOT EXISTS user (id INT PRIMARY KEY, nickname TEXT, avatar_url TEXT, mcname TEXT, uuid TEXT, is_verified BOOLEAN, cloak_id TEXT, email TEXT, state TEXT)""") 
 
 # def logger():
 #     day = datetime.datetime.now()
