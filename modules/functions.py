@@ -4,8 +4,9 @@ import requests
 import urllib
 import random
 import asyncio
+import hashlib
+import os
 
-from os import path
 from shutil import copyfile
 from discord.ext import slash
 
@@ -40,7 +41,7 @@ async def cmdmc(ctx:slash.Context, name:str, client):
             cur.execute(f"UPDATE user SET mcname = '{mcinfo['name']}', uuid = '{uuid}' WHERE id = {ctx.author.id}")
             await ctx.respond(f'Dein Minecraftname **{name}** wurde erfolgreich aktualisiert.')
         else:
-            cur.execute(f"INSERT INTO user VALUES ({ctx.author.id}, '{ctx.author.nick}', '{ctx.author.avatar_url}', '{mcinfo['name']}', '{uuid}', {False})")
+            cur.execute(f"INSERT INTO user VALUES ({ctx.author.id}, '{ctx.author.nick}', '{ctx.author.avatar_url}', '{mcinfo['name']}', '{uuid}', {False}, {False})")
             await ctx.respond(f'Dein Minecraftname **{name}** wurde erfolgreich hinzugefügt.')
         con.commit()
         await syncWhitelist()
@@ -77,8 +78,16 @@ async def cmdshutdown(ctx:slash.Context, bot):
         await ctx.respond('You are not as mighty as you may think you are.')
 
 async def cmdverify(ctx:slash.Context):
-    pass
-    #TODO verify somehow
+    state = hashlib.sha256(os.urandom(1024)).hexdigest()
+    result = cur.execute(f"SELECT * FROM user WHERE id = '{ctx.author.id}'")
+    result = cur.fetchone()
+    if result:
+        cur.execute(f"UPDATE user SET state = '{state}' WHERE id = '{ctx.author.id}'")
+    else:
+        cur.execute(f"INSERT INTO user VALUES ({ctx.author.id}, '{ctx.author.nick}', '{ctx.author.avatar_url}', '', '', {False}, {False}, '', '', '{state}')")
+    con.commit()
+    link = '' #TODO add keycloak url with all needed data (like state, redirect_url and whatever else the keycloak needs)
+    await ctx.respond(f"Verify process started\nPlease follow the (Link)[{link}] to complete the verification.", ephimeral=True)
 
 async def syncWhitelist():
     results = cur.execute("SELECT mcname, uuid, is_verified FROM user")
@@ -113,8 +122,8 @@ async def syncWhitelistPterodactyl(whitelist):
         await pterodactylWriteFile(serverid, whitelistpath, json.dumps(whitelist), init.config().get_pterodactyl_apikey())
     paths.close()
 
-async def pterodactylWriteFile(serverid, path, data, apikey):
-    url = f'{init.config().get_pterodactyl_domain()}api/client/servers/{serverid}/files/write?file={urllib.parse.quote(path)}'
+async def pterodactylWriteFile(serverid, cfg_path, data, apikey):
+    url = f'{init.config().get_pterodactyl_domain()}api/client/servers/{serverid}/files/write?file={urllib.parse.quote(cfg_path)}'
     requests.post(url, data=data, headers={"Accept": "application/json", "Authorization": f"Bearer {apikey}"})
 
 # async def isMod(ctx:slash.Context, bot):
