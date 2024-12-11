@@ -12,7 +12,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def index():
-    #TODO there should be someting like emplates in flask, so you just return the function with the html file without opening it manually first :D
+    #TODO there should be someting like templates in flask, so you just return the function with the html file without opening it manually first :D
     with open("Include/index.html", 'r') as p:
         page = p.read()
     return page
