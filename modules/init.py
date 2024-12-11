@@ -33,9 +33,9 @@ class config():
         return self.redirect_url
     
 
-con = sqlite3.connect('data/database.sqlite')
+con = sqlite3.connect('data/database.sqlite', check_same_thread=False)
 cur = con.cursor()
-cur.execute("""CREATE TABLE IF NOT EXISTS user (id INT PRIMARY KEY, nickname TEXT, avatar_url TEXT, mcname TEXT, uuid TEXT, is_verified BOOLEAN, cloak_id TEXT, email TEXT, state TEXT)""") 
+cur.execute("""CREATE TABLE IF NOT EXISTS user (id INT PRIMARY KEY, nickname TEXT, avatar_url TEXT, mcname TEXT, uuid TEXT, is_verified BOOLEAN, is_admin BOOLEAN, cloak_id TEXT, email TEXT, state TEXT)""") 
 
 # def logger():
 #     day = datetime.datetime.now()
